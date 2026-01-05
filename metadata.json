@@ -1,0 +1,5 @@
+{
+  "name": "CHMADEX DIAL",
+  "description": "A local-first hybrid cognitive engine using Chrome Built-in AI and Gemini Cloud fallback to provide dialectical analysis (Thesis, Antithesis, Synthesis).",
+  "requestFramePermissions": []
+}
