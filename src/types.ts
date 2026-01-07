@@ -1,5 +1,5 @@
 
-export type DialecticStyle = 'chola' | 'malandra' | 'fresa';
+export type DialecticStyle = 'chola' | 'malandra' | 'fresa' | 'ballerina' | 'ballet' | 'folklorico';
 
 export interface DialecticalState {
   thesis: string;

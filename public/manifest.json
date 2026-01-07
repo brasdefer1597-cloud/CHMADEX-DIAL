@@ -1,4 +1,3 @@
-
 {
   "manifest_version": 3,
   "name": "Chalamandra QuantumMind XYZ",
@@ -40,7 +39,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["assets/*"],
+      "resources": ["assets/*", "content.js", "background.js"],
       "matches": ["<all_urls>"]
     }
   ]
