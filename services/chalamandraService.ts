@@ -55,8 +55,11 @@ export class ChalamandraEngine {
     });
 
     const thesisText = thesisResponse.text || "Error en Tesis.";
-    const sources = thesisResponse.candidates?.[0]?.groundingMetadata?.groundingChunks
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sources = (thesisResponse.candidates?.[0]?.groundingMetadata as any)?.groundingChunks
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ?.filter((c: any) => c.web?.uri)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .map((c: any) => ({ uri: c.web.uri, title: c.web.title })) || [];
 
     // 2. ANTÍTESIS CRÍTICA

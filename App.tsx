@@ -7,7 +7,6 @@ import {
   Zap, 
   Sparkles, 
   Shuffle, 
-  Link as LinkIcon, 
   ExternalLink, 
   Loader2,
   Cpu,
@@ -18,6 +17,7 @@ import {
   Cloud
 } from 'lucide-react';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const chrome: any;
 
 const App: React.FC = () => {
@@ -33,6 +33,7 @@ const App: React.FC = () => {
     chalamandra.checkCapabilities().then(setCapabilities);
     
     if (typeof chrome !== 'undefined' && chrome.storage) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       chrome.storage.local.get(['lastSelectedText'], (res: any) => {
         if (res.lastSelectedText) {
           setInput(res.lastSelectedText);
