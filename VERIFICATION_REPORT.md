@@ -12,3 +12,12 @@
 1. **App.tsx**: Correctamente ubicado en `src/`.
 2. **chalamandraService.ts**: Correctamente ubicado en `src/services/`.
 3. **Dependencias**: `package.json` actualizado con dependencias necesarias.
+
+## 📄 Declaración de Privacidad (Chrome Web Store)
+### Finalidad de los Datos:
+
+**Uso de Datos**: La extensión utiliza el permiso storage únicamente para guardar localmente el texto seleccionado por el usuario y facilitar su decodificación en la interfaz emergente (popup).
+
+**Comunicación con IA**: El texto introducido se envía exclusivamente a la API de Google Gemini para su procesamiento dialéctico (Tesis/Antítesis/Síntesis). No se almacenan datos en servidores externos propios.
+
+**No Comercialización**: Se declara bajo fe de juramento que no se recopilan, venden ni transfieren datos de navegación a terceros para fines publicitarios o de minería de datos.

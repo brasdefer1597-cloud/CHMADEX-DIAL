@@ -5,7 +5,19 @@
   "description": "Dialectical Quantum Engine: Chola, Malandra, Salamandra.",
   "action": {
     "default_popup": "index.html",
-    "default_title": "ChalamandraMDX"
+    "default_title": "ChalamandraMDX",
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "32": "assets/icon32.png",
+      "48": "assets/icon48.png",
+      "128": "assets/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "assets/icon16.png",
+    "32": "assets/icon32.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
   },
   "permissions": [
     "activeTab",
@@ -13,6 +25,20 @@
     "contextMenus"
   ],
   "host_permissions": [
-    "https://generativelanguage.googleapis.com/*"
-  ]
+    "https://generativelanguage.googleapis.com/*",
+    "https://googleapis.com/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "background": {
+    "service_worker": "service-worker.js",
+    "type": "module"
+  }
 }
