@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "ChalamandraMDX",
+  "version": "4.1.0",
+  "description": "Dialectical Quantum Engine: Chola, Malandra, Salamandra.",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "ChalamandraMDX"
+  },
+  "permissions": [
+    "activeTab",
+    "storage",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "https://generativelanguage.googleapis.com/*"
+  ]
+}
