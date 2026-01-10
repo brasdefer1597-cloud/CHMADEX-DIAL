@@ -3,7 +3,9 @@ import { GoogleGenAI } from "@google/genai";
 import { DialecticalState, DialecticStyle, CapabilityStatus } from "../types";
 
 // Inicialización única con la llave de entorno
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Usamos import.meta.env para Vite, o fallback a process.env si se define globalmente
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || 'dummy_key_for_dev';
+const ai = new GoogleGenAI({ apiKey });
 
 const PERSONAS = {
   chola: {
