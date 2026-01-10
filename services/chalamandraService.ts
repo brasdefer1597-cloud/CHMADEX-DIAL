@@ -5,41 +5,26 @@ import { DialecticalState, DialecticStyle, CapabilityStatus } from "../types";
 // Inicialización única con la llave de entorno
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-const PERSONAS: Record<string, { role: string; desc: string; model: string }> = {
+const PERSONAS = {
   chola: {
     role: "BARRIO-ROOT",
     desc: "Directa, cruda, basada en la realidad urbana, auténtica.",
-    model: "gemini-2.0-flash"
+    model: "gemini-3-flash-preview"
   },
   malandra: {
     role: "ESTRATEGIA-SURVIVAL",
     desc: "Astuta, crítica, adaptativa, desafiante y táctica.",
-    model: "gemini-2.0-flash"
+    model: "gemini-3-flash-preview"
   },
   fresa: {
     role: "TECH-REFINED",
     desc: "Sofisticada, académica, tecnológica, estética y aspiracional.",
-    model: "gemini-2.0-flash"
-  },
-  ballerina: {
-    role: "FLUID-ARTISTIC",
-    desc: "Elegante, fluida, expresiva, artística y emocionalmente resonante.",
-    model: "gemini-2.0-flash"
-  },
-  ballet: {
-    role: "CLASSIC-RIGID",
-    desc: "Estructurada, disciplinada, técnica, formal y perfeccionista.",
-    model: "gemini-2.0-flash"
-  },
-  folklorico: {
-    role: "ROOTS-TRADITION",
-    desc: "Ancestral, colorida, conectada a la tierra, narrativa y mítica.",
-    model: "gemini-2.0-flash"
+    model: "gemini-3-flash-preview"
   },
   salamandra: {
     role: "SALAMANDRA MAGISTRAL",
     desc: "Visionaria, integradora, decodificadora cuántica universal 369.",
-    model: "gemini-2.0-pro-exp-02-05"
+    model: "gemini-3-pro-preview"
   }
 };
 
@@ -61,33 +46,24 @@ export class ChalamandraEngine {
     
     // 1. TESIS CON GOOGLE SEARCH GROUNDING
     onProgress?.(`Sincronizando Tesis ${thesisStyle.toUpperCase()}...`);
-
-    const thesisPersona = PERSONAS[thesisStyle] || PERSONAS.chola;
-
     const thesisResponse = await ai.models.generateContent({
-      model: thesisPersona.model,
-      contents: `Actúa como ${thesisPersona.role}. ${thesisPersona.desc} Proporciona una TESIS fundamentada sobre: "${input}".`,
+      model: PERSONAS[thesisStyle].model,
+      contents: `Actúa como ${PERSONAS[thesisStyle].role}. ${PERSONAS[thesisStyle].desc} Proporciona una TESIS fundamentada sobre: "${input}".`,
       config: { 
         tools: [{ googleSearch: {} }] 
       }
     });
 
     const thesisText = thesisResponse.text || "Error en Tesis.";
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sources = (thesisResponse.candidates?.[0]?.groundingMetadata as any)?.groundingChunks
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sources = thesisResponse.candidates?.[0]?.groundingMetadata?.groundingChunks
       ?.filter((c: any) => c.web?.uri)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .map((c: any) => ({ uri: c.web.uri, title: c.web.title })) || [];
 
     // 2. ANTÍTESIS CRÍTICA
     onProgress?.(`Desafiando con Antítesis ${antithesisStyle.toUpperCase()}...`);
-
-    const antithesisPersona = PERSONAS[antithesisStyle] || PERSONAS.malandra;
-
     const antithesisResponse = await ai.models.generateContent({
-      model: antithesisPersona.model,
-      contents: `Actúa como ${antithesisPersona.role}. ${antithesisPersona.desc} Desafía críticamente esta tesis: "${thesisText}" respecto al concepto original: "${input}".`
+      model: PERSONAS[antithesisStyle].model,
+      contents: `Actúa como ${PERSONAS[antithesisStyle].role}. ${PERSONAS[antithesisStyle].desc} Desafía críticamente esta tesis: "${thesisText}" respecto al concepto original: "${input}".`
     });
     const antithesisText = antithesisResponse.text || "Error en Antítesis.";
 
@@ -109,7 +85,7 @@ export class ChalamandraEngine {
 
   async generateDisruption(input: string): Promise<string> {
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-pro-exp-02-05",
+      model: "gemini-3-pro-preview",
       contents: `Aplica MECÁNICA INVERSA y DISRUPCIÓN NIVEL 9 a: "${input}". Rompe los paradigmas establecidos y ofrece una visión radical.`
     });
     return response.text || "Disrupción fallida.";
