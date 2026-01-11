@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "zip": "cd dist && zip -r ../chalamandra_extension.zip .",
+    "zip": "cd dist && zip -r ../chalamandra_v4.zip .",
     "preview": "vite preview"
   },
   "dependencies": {
