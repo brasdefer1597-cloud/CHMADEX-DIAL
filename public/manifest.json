@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "Chalamandra QuantumMind",
+  "name": "Chalamandra MDX",
   "version": "4.1.0",
   "description": "Dialectical Quantum Engine: Chola, Malandra, Salamandra.",
   "action": {
     "default_popup": "index.html",
-    "default_title": "Chalamandra QuantumMind",
+    "default_title": "Chalamandra MDX",
     "default_icon": {
       "16": "icon16.png",
       "32": "icon32.png",
@@ -20,9 +20,8 @@
     "128": "icon128.png"
   },
   "permissions": [
-    "activeTab",
     "storage",
-    "contextMenus"
+    "activeTab"
   ],
   "host_permissions": [
     "https://generativelanguage.googleapis.com/*",
