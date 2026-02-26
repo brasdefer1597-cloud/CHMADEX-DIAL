@@ -1,21 +1,12 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { chalamandra } from './services/chalamandraService';
 import { DialecticalState, ProcessingStatus, DialecticStyle, CapabilityStatus } from './types';
-import { 
-  BrainCircuit, 
-  Loader2,
-  Shuffle,
-  Info
-} from 'lucide-react';
 import Header from './components/Header';
-import DialecticControls from './components/DialecticControls';
+import InputSection from './components/InputSection';
 import ResultDisplay from './components/ResultDisplay';
 
-declare const chrome: any;
-
 const App: React.FC = () => {
-  const [input, setInput] = useState('');
-  const inputRef = useRef(''); // Ref to keep track of input without re-rendering dependencies
+  const [lastInput, setLastInput] = useState('');
   const [result, setResult] = useState<DialecticalState | null>(null);
   const [status, setStatus] = useState<ProcessingStatus>({ step: 'idle' });
   const [capabilities, setCapabilities] = useState<CapabilityStatus | null>(null);
@@ -23,34 +14,19 @@ const App: React.FC = () => {
   const [antithesisStyle, setAntithesisStyle] = useState<DialecticStyle>('malandra');
   const [feedback, setFeedback] = useState<'liked' | 'disliked' | null>(null);
 
-  // Keep inputRef in sync with input state
-  useEffect(() => {
-    inputRef.current = input;
-  }, [input]);
-
   useEffect(() => {
     chalamandra.checkCapabilities().then(setCapabilities);
-    
-    if (typeof chrome !== 'undefined' && chrome.storage) {
-      chrome.storage.local.get(['lastSelectedText'], (res: any) => {
-        if (res.lastSelectedText) {
-          setInput(res.lastSelectedText);
-          chrome.storage.local.remove(['lastSelectedText']);
-        }
-      });
-    }
   }, []);
 
-  const handleProcess = useCallback(async () => {
-    const currentInput = inputRef.current;
-    if (!currentInput.trim()) return;
+  const runDialectic = useCallback(async (text: string) => {
+    if (!text.trim()) return;
 
     setResult(null);
     setFeedback(null);
     setStatus({ step: 'analyzing_thesis', message: 'Iniciando Kernels...' });
 
     try {
-      const data = await chalamandra.runDialectic(currentInput, thesisStyle, antithesisStyle, (msg) => {
+      const data = await chalamandra.runDialectic(text, thesisStyle, antithesisStyle, (msg) => {
         setStatus(prev => ({ ...prev, message: msg }));
       });
       setResult(data);
@@ -60,19 +36,28 @@ const App: React.FC = () => {
     }
   }, [thesisStyle, antithesisStyle]);
 
-  const handleDisruption = useCallback(async () => {
-    const currentInput = inputRef.current;
-    if (!currentInput.trim()) return;
+  const handleInputProcess = useCallback((text: string) => {
+      setLastInput(text);
+      runDialectic(text);
+  }, [runDialectic]);
 
+  const handleRegenerate = useCallback(() => {
+      if (lastInput) runDialectic(lastInput);
+  }, [lastInput, runDialectic]);
+
+  const handleDisruption = useCallback(async (text: string) => {
+    if (!text.trim()) return;
+
+    setLastInput(text);
     setResult(null);
     setStatus({ step: 'disrupting', message: 'Hackeando realidad...' });
 
     try {
-      const text = await chalamandra.generateDisruption(currentInput);
+      const resultText = await chalamandra.generateDisruption(text);
       setResult({
-        thesis: currentInput,
+        thesis: text,
         antithesis: "ORDEN ESTABLECIDO",
-        synthesis: text,
+        synthesis: resultText,
         energySignature: "disruption-369"
       });
       setStatus({ step: 'complete' });
@@ -85,48 +70,15 @@ const App: React.FC = () => {
     <div className="p-6 flex flex-col gap-6 select-none animate-in fade-in duration-500">
       <Header capabilities={capabilities} />
 
-      <main className="space-y-5">
-        <div className="relative group">
-          <textarea
-            className="w-full h-28 bg-white/5 border border-white/10 rounded-xl p-4 text-sm focus:ring-1 focus:ring-malandra outline-none transition-all placeholder:text-slate-600 resize-none font-light leading-relaxed scrollbar-hide"
-            placeholder="Introduce dilema, idea o realidad a decodificar..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <div className="absolute top-4 right-4 opacity-30 group-hover:opacity-100 transition-opacity" title="Selecciona texto en el navegador para cargarlo aquí automáticamente.">
-            <Info className="w-4 h-4 cursor-help text-slate-400" />
-          </div>
-        </div>
-
-        <DialecticControls
-          thesisStyle={thesisStyle}
-          setThesisStyle={setThesisStyle}
-          antithesisStyle={antithesisStyle}
-          setAntithesisStyle={setAntithesisStyle}
-        />
-
-        <div className="flex gap-3">
-          <button
-            onClick={handleProcess}
-            disabled={status.step !== 'idle' && status.step !== 'complete' && status.step !== 'error'}
-            className="flex-[2] bg-gradient-to-r from-chola to-malandra text-white font-black rounded-xl py-4 flex items-center justify-center gap-2 shadow-xl shadow-chola/10 hover:shadow-malandra/20 transition-all text-xs uppercase tracking-widest disabled:opacity-50 active:scale-95"
-          >
-            {status.step.includes('analyzing') || status.step === 'synthesizing' ? (
-              <Loader2 className="animate-spin w-4 h-4" />
-            ) : (
-              <BrainCircuit className="w-4 h-4" />
-            )}
-            Decodificar 369
-          </button>
-          <button
-            onClick={handleDisruption}
-            className="flex-1 glass-panel border-fresa/30 text-fresa font-bold rounded-xl py-4 flex items-center justify-center gap-2 text-xs uppercase hover:bg-fresa/10 transition-all active:scale-95"
-          >
-            <Shuffle className="w-4 h-4" />
-            Disrupt
-          </button>
-        </div>
-      </main>
+      <InputSection
+        thesisStyle={thesisStyle}
+        setThesisStyle={setThesisStyle}
+        antithesisStyle={antithesisStyle}
+        setAntithesisStyle={setAntithesisStyle}
+        status={status}
+        onProcess={handleInputProcess}
+        onDisrupt={handleDisruption}
+      />
 
       {status.step !== 'idle' && status.step !== 'complete' && (
         <div className="py-4 text-center border-y border-white/5 animate-pulse">
@@ -140,7 +92,7 @@ const App: React.FC = () => {
         antithesisStyle={antithesisStyle}
         feedback={feedback}
         setFeedback={setFeedback}
-        onRegenerate={handleProcess}
+        onRegenerate={handleRegenerate}
       />
     </div>
   );
