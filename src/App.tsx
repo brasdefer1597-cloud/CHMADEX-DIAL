@@ -9,7 +9,8 @@ import {
 } from 'lucide-react';
 import Header from './components/Header';
 import DialecticControls from './components/DialecticControls';
-import ResultDisplay from './components/ResultDisplay';
+
+const ResultDisplay = React.lazy(() => import('./components/ResultDisplay'));
 
 declare const chrome: any;
 
@@ -134,14 +135,16 @@ const App: React.FC = () => {
         </div>
       )}
 
-      <ResultDisplay
-        result={result}
-        thesisStyle={thesisStyle}
-        antithesisStyle={antithesisStyle}
-        feedback={feedback}
-        setFeedback={setFeedback}
-        onRegenerate={handleProcess}
-      />
+      <React.Suspense fallback={<div className="h-40 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-malandra/50" /></div>}>
+        <ResultDisplay
+          result={result}
+          thesisStyle={thesisStyle}
+          antithesisStyle={antithesisStyle}
+          feedback={feedback}
+          setFeedback={setFeedback}
+          onRegenerate={handleProcess}
+        />
+      </React.Suspense>
     </div>
   );
 };
