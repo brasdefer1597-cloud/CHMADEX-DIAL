@@ -14,8 +14,8 @@ import ResultDisplay from './components/ResultDisplay';
 declare const chrome: any;
 
 const App: React.FC = () => {
-  const [input, setInput] = useState('');
-  const inputRef = useRef(''); // Ref to keep track of input without re-rendering dependencies
+  // BOLT OPTIMIZATION: Replaced controlled input with uncontrolled inputRef to prevent full App re-renders on every keystroke, significantly improving typing performance.
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [result, setResult] = useState<DialecticalState | null>(null);
   const [status, setStatus] = useState<ProcessingStatus>({ step: 'idle' });
   const [capabilities, setCapabilities] = useState<CapabilityStatus | null>(null);
@@ -23,18 +23,13 @@ const App: React.FC = () => {
   const [antithesisStyle, setAntithesisStyle] = useState<DialecticStyle>('malandra');
   const [feedback, setFeedback] = useState<'liked' | 'disliked' | null>(null);
 
-  // Keep inputRef in sync with input state
-  useEffect(() => {
-    inputRef.current = input;
-  }, [input]);
-
   useEffect(() => {
     chalamandra.checkCapabilities().then(setCapabilities);
     
     if (typeof chrome !== 'undefined' && chrome.storage) {
       chrome.storage.local.get(['lastSelectedText'], (res: any) => {
         if (res.lastSelectedText) {
-          setInput(res.lastSelectedText);
+          if (inputRef.current) inputRef.current.value = res.lastSelectedText;
           chrome.storage.local.remove(['lastSelectedText']);
         }
       });
@@ -42,7 +37,7 @@ const App: React.FC = () => {
   }, []);
 
   const handleProcess = useCallback(async () => {
-    const currentInput = inputRef.current;
+    const currentInput = inputRef.current?.value || '';
     if (!currentInput.trim()) return;
 
     setResult(null);
@@ -61,7 +56,7 @@ const App: React.FC = () => {
   }, [thesisStyle, antithesisStyle]);
 
   const handleDisruption = useCallback(async () => {
-    const currentInput = inputRef.current;
+    const currentInput = inputRef.current?.value || '';
     if (!currentInput.trim()) return;
 
     setResult(null);
@@ -88,10 +83,9 @@ const App: React.FC = () => {
       <main className="space-y-5">
         <div className="relative group">
           <textarea
+            ref={inputRef}
             className="w-full h-28 bg-white/5 border border-white/10 rounded-xl p-4 text-sm focus:ring-1 focus:ring-malandra outline-none transition-all placeholder:text-slate-600 resize-none font-light leading-relaxed scrollbar-hide"
             placeholder="Introduce dilema, idea o realidad a decodificar..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
           />
           <div className="absolute top-4 right-4 opacity-30 group-hover:opacity-100 transition-opacity" title="Selecciona texto en el navegador para cargarlo aquí automáticamente.">
             <Info className="w-4 h-4 cursor-help text-slate-400" />
