@@ -1,0 +1,3 @@
+## 2024-05-24 - Uncontrolled TextInputs Prevent Entire App Re-renders
+**Learning:** Controlled text areas with state in the root component (`App.tsx`) cause the entire application, including unaffected child components, to re-render on every single keystroke. This causes massive performance bottlenecks especially as the input text grows and components are heavy.
+**Action:** Always favor uncontrolled inputs (`useRef` and `defaultValue`) over controlled components for inputs mapped to state variables, particularly in root or parent components when typing doesn't require immediate UI feedback or validation on every keystroke.
