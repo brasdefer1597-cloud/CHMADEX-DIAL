@@ -1,29 +1,20 @@
-# Chalamandra QuantumMind v4.1.0
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-### Dialectical AI Engine: Chola | Malandra | Fresa | Salamandra
+# Run and deploy your AI Studio app
 
-Chalamandra es una extensión de Chrome de alto rendimiento que utiliza la **API de Gemini 3** para procesar la realidad a través de una tríada dialéctica. No solo responde; decodifica la información mediante una Tesis (con búsqueda en Google), una Antítesis crítica y una Síntesis magistral.
+This contains everything you need to run your app locally.
 
----
+View your app in AI Studio: https://ai.studio/apps/7a004228-55f0-433c-9318-a36d5dc6a779
 
-## 🏗️ Arquitectura del Sistema
-El siguiente diagrama detalla cómo los componentes que hemos verificado interactúan entre sí:
+## Run Locally
 
-```mermaid
-graph TD
-    User((Usuario)) -->|Selección/Input| Popup[App.tsx]
-    Popup -->|Llamada de Servicio| Engine[ChalamandraEngine]
+**Prerequisites:**  Node.js
 
-    subgraph Google_Cloud
-        Engine -->|Grounding Search| G3F[Gemini 3 Flash: Tesis]
-        Engine -->|Análisis Crítico| G3F2[Gemini 3 Flash: Antítesis]
-        Engine -->|Resolución| G3P[Gemini 2.5 Pro: Síntesis]
-    end
 
-    G3P -->|Resultado 369| Popup
-    Popup -->|Render| User
-
-    style Popup fill:#9D4EDD,color:#fff
-    style Engine fill:#2EC4B6,color:#fff
-    style G3P fill:#FF6B35,color:#fff
-```
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
