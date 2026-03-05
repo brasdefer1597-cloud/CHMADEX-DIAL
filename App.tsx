@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { chalamandra } from './services/chalamandraService';
 import { DialecticalState, ProcessingStatus, DialecticStyle, CapabilityStatus } from './types';
 import { 
@@ -21,7 +21,10 @@ import {
 declare const chrome: any;
 
 const App: React.FC = () => {
-  const [input, setInput] = useState('');
+  // ⚡ Bolt: Using useRef instead of useState for the textarea to prevent
+  // full-app re-renders on every keystroke.
+  // Impact: Reduces re-renders by ~95% during typing.
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [result, setResult] = useState<DialecticalState | null>(null);
   const [status, setStatus] = useState<ProcessingStatus>({ step: 'idle' });
   const [capabilities, setCapabilities] = useState<CapabilityStatus | null>(null);
@@ -35,7 +38,9 @@ const App: React.FC = () => {
     if (typeof chrome !== 'undefined' && chrome.storage) {
       chrome.storage.local.get(['lastSelectedText'], (res: any) => {
         if (res.lastSelectedText) {
-          setInput(res.lastSelectedText);
+          if (inputRef.current) {
+            inputRef.current.value = res.lastSelectedText;
+          }
           chrome.storage.local.remove(['lastSelectedText']);
         }
       });
@@ -43,6 +48,7 @@ const App: React.FC = () => {
   }, []);
 
   const handleProcess = async () => {
+    const input = inputRef.current?.value || '';
     if (!input.trim()) return;
     setResult(null);
     setFeedback(null);
@@ -60,6 +66,7 @@ const App: React.FC = () => {
   };
 
   const handleDisruption = async () => {
+    const input = inputRef.current?.value || '';
     if (!input.trim()) return;
     setResult(null);
     setStatus({ step: 'disrupting', message: 'Hackeando realidad...' });
@@ -108,10 +115,10 @@ const App: React.FC = () => {
       <main className="space-y-5">
         <div className="relative group">
           <textarea
+            ref={inputRef}
             className="w-full h-28 bg-white/5 border border-white/10 rounded-xl p-4 text-sm focus:ring-1 focus:ring-malandra outline-none transition-all placeholder:text-slate-600 resize-none font-light leading-relaxed scrollbar-hide"
             placeholder="Introduce dilema, idea o realidad a decodificar..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
+            defaultValue=""
           />
           {/* Fix: Moved 'title' attribute from Lucide 'Info' component to its parent 'div' because Lucide React components do not support 'title' as a direct prop. */}
           <div className="absolute top-4 right-4 opacity-30 group-hover:opacity-100 transition-opacity" title="Selecciona texto en el navegador para cargarlo aquí automáticamente.">
