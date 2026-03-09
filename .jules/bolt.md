@@ -1,0 +1,3 @@
+## 2024-05-24 - [Uncontrolled Textarea in Main UI]
+**Learning:** The main `App` component previously used a controlled `<textarea>` bound to a React `useState`. Because the `App` component is complex (containing multiple sub-components, styling logic, and inline event handlers), every keystroke triggered a full re-render of the entire extension UI. This is a significant bottleneck for a thinking tool meant for typing out complex dilemmas.
+**Action:** Replaced the controlled `textarea` with an uncontrolled component using `useRef`. For this architecture, always use `useRef` for text inputs that don't strictly require immediate state synchronization to prevent UI lag during typing.
