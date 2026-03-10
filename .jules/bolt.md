@@ -1,0 +1,3 @@
+## 2024-05-18 - Uncontrolled Component Optimization for React Textareas
+**Learning:** In a React application with a large or complex main component (like `App.tsx` here), using a controlled `<textarea>` with `useState` for the main text input causes the entire component tree to re-render on every single keystroke. This is a noticeable performance bottleneck, especially if the component has many children or complex styling.
+**Action:** Use an uncontrolled component approach with `useRef` for text inputs where the value is only needed on submission (e.g., clicking "Process"). This prevents unnecessary re-renders during typing, significantly improving the responsiveness of the input field.
