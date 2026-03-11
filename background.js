@@ -1,4 +1,3 @@
-
 /**
  * Chalamandra QuantumMind - Background Service Worker
  * Gestiona el ciclo de vida de la extensión y eventos de sistema.
@@ -22,16 +21,25 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     chrome.storage.local.set({ 'lastSelectedText': info.selectionText }, () => {
       console.log("📥 Texto capturado por el Kernel:", info.selectionText.substring(0, 30) + "...");
       
-      // Opcional: Podríamos disparar una notificación o insignia en el icono
-      chrome.action.setBadgeText({ text: "!" });
-      chrome.action.setBadgeBackgroundColor({ color: "#2EC4B6" });
+      // Notificación visual en el badge
+      chrome.action.setBadgeText({ text: "369" });
+      chrome.action.setBadgeBackgroundColor({ color: "#9D4EDD" }); // hybrida color
     });
   }
 });
 
+// Escuchar mensajes globales
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'GET_CAPABILITIES') {
+    // Podríamos centralizar el chequeo de capacidades aquí si fuera necesario
+    sendResponse({ status: 'ready' });
+  }
+  return true;
+});
+
 // Limpiar insignia al abrir el popup
 chrome.runtime.onConnect.addListener((port) => {
-  if (port.name === "popup") {
+  if (port.name === "popup" || port.name === "chmadex") {
     chrome.action.setBadgeText({ text: "" });
   }
 });
