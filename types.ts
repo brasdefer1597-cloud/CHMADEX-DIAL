@@ -1,4 +1,3 @@
-
 export type DialecticStyle = 'chola' | 'malandra' | 'fresa';
 
 export interface DialecticalState {
@@ -7,6 +6,7 @@ export interface DialecticalState {
   antithesis: string;
   synthesis: string;
   energySignature?: string;
+  feedback?: 'liked' | 'disliked';
 }
 
 export interface ProcessingStatus {
@@ -23,4 +23,15 @@ export interface DisruptionResult {
   original: string;
   disrupted: string;
   level: number;
+}
+
+export interface PromptHistory {
+  id: string;
+  timestamp: string;
+  input: string;
+  result: DialecticalState;
+  styles: {
+    thesis: DialecticStyle;
+    antithesis: DialecticStyle;
+  };
 }
