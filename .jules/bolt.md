@@ -1,0 +1,3 @@
+## 2024-06-18 - Replacing React controlled inputs with uncontrolled inputs
+**Learning:** Using controlled input with React's `useState` on every keystroke in a large or complex component can cause significant performance degradation due to full component re-renders. We should use uncontrolled components with `useRef` and `defaultValue` for inputs if we don't need real-time validation or derived state based on each keystroke, to drastically reduce the number of re-renders.
+**Action:** When creating text inputs that only need their value upon a submit action (like a button click), default to using `useRef` for uncontrolled inputs instead of `useState` to optimize React rendering performance.
