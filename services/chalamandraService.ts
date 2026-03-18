@@ -10,7 +10,7 @@ const getAI = () => {
      // In extension context, we might not have it yet or it might be in storage
      return null;
   }
-  return new GoogleGenAI(API_KEY);
+  return new GoogleGenAI({ apiKey: API_KEY });
 };
 
 let _ai: any = null;

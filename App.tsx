@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Sparkles, 
   BrainCircuit,
@@ -19,7 +19,7 @@ import { chalamandra } from './services/chalamandraService';
 import { DialecticStyle, DialecticalState, ProcessingStatus, CapabilityStatus, PromptHistory } from './types';
 
 const App: React.FC = () => {
-  const [input, setInput] = useState('');
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [thesisStyle, setThesisStyle] = useState<DialecticStyle>('chola');
   const [antithesisStyle, setAntithesisStyle] = useState<DialecticStyle>('malandra');
   const [status, setStatus] = useState<ProcessingStatus>({ step: 'idle' });
@@ -38,7 +38,7 @@ const App: React.FC = () => {
       if (typeof chrome !== 'undefined' && chrome.storage) {
         chrome.storage.local.get(['lastSelectedText', 'chalamandra_history'], (data) => {
           if (data.lastSelectedText) {
-            setInput(data.lastSelectedText);
+            if (inputRef.current) inputRef.current.value = data.lastSelectedText;
             chrome.storage.local.remove('lastSelectedText');
           }
           if (data.chalamandra_history) {
@@ -50,11 +50,11 @@ const App: React.FC = () => {
     init();
   }, []);
 
-  const saveToHistory = (newResult: DialecticalState) => {
+  const saveToHistory = (newResult: DialecticalState, currentInput: string) => {
     const entry: PromptHistory = {
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
-      input,
+      input: currentInput,
       result: newResult,
       styles: { thesis: thesisStyle, antithesis: antithesisStyle }
     };
@@ -66,20 +66,21 @@ const App: React.FC = () => {
   };
 
   const handleProcess = async () => {
-    if (!input.trim()) return;
+    const currentInput = inputRef.current?.value || '';
+    if (!currentInput.trim()) return;
     setResult(null);
     setFeedback(null);
     setStatus({ step: 'analyzing_thesis', message: 'Sincronizando Tesis...' });
 
     try {
       const dialecticResult = await chalamandra.runDialectic(
-        input,
+        currentInput,
         thesisStyle,
         antithesisStyle,
         (msg) => setStatus(prev => ({ ...prev, message: msg }))
       );
       setResult(dialecticResult);
-      saveToHistory(dialecticResult);
+      saveToHistory(dialecticResult, currentInput);
       setStatus({ step: 'complete' });
     } catch (e) {
       console.error(e);
@@ -88,20 +89,21 @@ const App: React.FC = () => {
   };
 
   const handleDisruption = async () => {
-    if (!input.trim()) return;
+    const currentInput = inputRef.current?.value || '';
+    if (!currentInput.trim()) return;
     setResult(null);
     setStatus({ step: 'disrupting', message: 'Hackeando realidad...' });
 
     try {
-      const text = await chalamandra.generateDisruption(input);
+      const text = await chalamandra.generateDisruption(currentInput);
       const disruptionResult: DialecticalState = {
-        thesis: input,
+        thesis: currentInput,
         antithesis: "ORDEN ESTABLECIDO",
         synthesis: text,
         energySignature: "disruption-369"
       };
       setResult(disruptionResult);
-      saveToHistory(disruptionResult);
+      saveToHistory(disruptionResult, currentInput);
       setStatus({ step: 'complete' });
     } catch (e) {
       setStatus({ step: 'error', message: 'Error de disrupción.' });
@@ -166,7 +168,7 @@ const App: React.FC = () => {
                 key={item.id}
                 className="glass-panel rounded-lg p-3 text-[11px] cursor-pointer hover:bg-white/5 transition-colors border-l-2 border-hybrida"
                 onClick={() => {
-                  setInput(item.input);
+                  if (inputRef.current) inputRef.current.value = item.input;
                   setResult(item.result);
                   setThesisStyle(item.styles.thesis);
                   setAntithesisStyle(item.styles.antithesis);
@@ -192,11 +194,12 @@ const App: React.FC = () => {
         <>
           <main className="space-y-5">
             <div className="relative group">
+              {/* ⚡ Bolt: Using uncontrolled input ref to prevent full application re-renders on every keystroke. Eliminates input latency. */}
               <textarea
                 className="w-full h-28 bg-white/5 border border-white/10 rounded-xl p-4 text-sm focus:ring-1 focus:ring-malandra outline-none transition-all placeholder:text-slate-600 resize-none font-light leading-relaxed scrollbar-hide"
                 placeholder="Introduce dilema, idea o realidad a decodificar..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
+                ref={inputRef}
+                defaultValue=""
               />
               <div className="absolute top-4 right-4 opacity-30 group-hover:opacity-100 transition-opacity" title="Selecciona texto en el navegador para cargarlo aquí automáticamente.">
                 <Info className="w-4 h-4 cursor-help text-slate-400" />

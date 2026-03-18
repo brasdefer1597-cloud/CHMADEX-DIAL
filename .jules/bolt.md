@@ -1,0 +1,3 @@
+## 2024-05-24 - Uncontrolled Inputs for Performance
+**Learning:** In a single-component architecture (like App.tsx) managing significant layout and component trees, controlled inputs (`useState` connected to `value` and `onChange`) cause full application re-renders on every keystroke. This creates notable input latency.
+**Action:** When a `<textarea>` or input is only needed upon form submission or a specific action (like "Decodificar" or "Disrupt"), use an uncontrolled input approach via `useRef<HTMLTextAreaElement>(null)`. Only read the input value when necessary, bypassing the standard React state cycle to drastically improve perceived typing performance.
