@@ -1,0 +1,3 @@
+## 2024-05-18 - Prevent full app re-renders on keystrokes
+**Learning:** Using controlled components (via `useState`) for high-frequency text inputs in a complex component tree causes unnecessary full application re-renders on every keystroke, leading to significant typing performance degradation, especially in a monolithic component like `App.tsx`.
+**Action:** Use uncontrolled components (`useRef` and `defaultValue`) for text inputs where the value is only needed on submission or specific actions, avoiding state updates on every keystroke.
