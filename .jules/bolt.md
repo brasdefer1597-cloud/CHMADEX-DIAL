@@ -1,0 +1,3 @@
+## 2024-05-24 - Controlled vs Uncontrolled Inputs in Main Prompt Components
+**Learning:** Using controlled text inputs (`value={state}`, `onChange={(e) => setState(e.target.value)}`) for the main input prompt of an AI chat or thinking application causes cascading re-renders on every single keystroke. When the `App` component is heavy or contains multiple complex state derivations, these full-tree re-renders create a noticeable performance bottleneck and lag while typing.
+**Action:** Default to using uncontrolled inputs with `useRef` for main textareas in React applications. Only switch to controlled inputs when strictly necessary for real-time validation or exact synchronization with derived state during the typing phase.
