@@ -1,0 +1,3 @@
+## 2024-05-24 - Controlled vs Uncontrolled Input in App.tsx
+**Learning:** Using a controlled `<textarea>` with `useState` in the root `App.tsx` component causes the entire application tree to re-render on every single keystroke. Given the complexity of the UI and components like `ChalamandraEngine`, this is a significant and unnecessary performance bottleneck.
+**Action:** Always prefer uncontrolled inputs (`useRef`) for large text areas or frequent inputs when the value is only needed on submission (like "Decodificar" or "Disrupt"), rather than on every keystroke, especially in root or high-level components.
