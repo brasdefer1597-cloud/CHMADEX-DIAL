@@ -1,0 +1,3 @@
+## 2025-03-25 - [React Performance: Controlled vs Uncontrolled inputs for frequent keystrokes]
+**Learning:** For inputs with frequent updates like `<textarea>` in React (especially when using Chrome Extension APIs that might load initial states async), using controlled components (`useState`) triggers full component re-renders on every keystroke.
+**Action:** Replace `useState` with `useRef` and `defaultValue` for text inputs that do not need continuous re-renders. Ensure that when programmatic updates are needed (e.g., from `chrome.storage`), the ref's `current.value` is updated directly. Ensure any async callbacks read the current value from the ref when executed.
