@@ -1,0 +1,3 @@
+## 2024-05-24 - Controlled vs Uncontrolled Input Optimization in App.tsx
+**Learning:** Using a controlled `useState` for the main `<textarea>` input in `App.tsx` caused the entire application (and all its children) to re-render on every single keystroke. This is a critical bottleneck given the complexity of the main dashboard UI.
+**Action:** Always favor using an uncontrolled `useRef` for main, frequently updated text inputs in this codebase unless immediate re-rendering of dependent components based on partial input is strictly required. Ensure that functions like `saveToHistory` or API calls explicitly pull the value from the ref (`inputRef.current.value`) rather than relying on a state variable closure.
