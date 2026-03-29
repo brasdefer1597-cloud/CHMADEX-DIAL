@@ -1,0 +1,3 @@
+## 2024-05-24 - [Uncontrolled Inputs in React for Performance]
+**Learning:** Using controlled components (via `useState`) for text areas or inputs that update frequently can cause entire application re-renders on every single keystroke. In an application with a complex UI or multiple child components, this can lead to a significant performance bottleneck.
+**Action:** When a text input does not require immediate, character-by-character validation or formatting, and its value is only needed on form submission or explicit action (like "handleProcess" or "handleDisruption"), use an uncontrolled component with a `useRef` to hold the value. This prevents unnecessary re-renders while still providing access to the current input value when needed.
